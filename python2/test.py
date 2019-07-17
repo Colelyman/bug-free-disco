@@ -3,7 +3,7 @@ import CRISPResso2Align as nw
 alnMatrix = nw.read_matrix("EDNAFULL")
 
 
-with open('/Users/aabelay/Documents/Edilytics/amany3/randtests.txt','r') as test_file:
+with open('../randtests.txt','r') as test_file:
 
     #head = test_file.readline()
     line = test_file.readline()

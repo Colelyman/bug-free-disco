@@ -3,7 +3,7 @@ import CRISPResso2Align as nw
 alnMatrix = nw.read_matrix("EDNAFULL")
 
 #py3results = open("py3results.db", "w")
-with open('randtests.txt','rb') as test_file:
+with open('../randtests.txt','rb') as test_file:
     #head = test_file.readline()
     line = test_file.readline()
     while line:
