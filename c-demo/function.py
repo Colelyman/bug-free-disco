@@ -1,6 +1,5 @@
 import ctypes 
 import os
-NUM = 16      
 # libfun loaded to the python file 
 # using fun.myFunction(), 
 # C function can be accessed 
@@ -11,13 +10,13 @@ fun = ctypes.CDLL(os.path.join(os.getcwd(),'libfun.so'))
 # will be passed to the function                                                         
 # ctypes will check it. 
             
-fun.myFunction.argtypes = [ctypes.c_int]
+fun.myFunction.argtypes = [ctypes.c_int,ctypes.c_wchar_p]
   
 # now we can call this  
 # function using instant (fun) 
 # returnValue is the value  
 # return by function written in C  
 # code 
-retVal = fun.myFunction(NUM)      
+retVal = fun.myFunction(16,'TEST')      
 
 print('return value is ' + str(retVal))
