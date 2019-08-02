@@ -1,7 +1,7 @@
 #include <stdio.h> 
 #include <string.h>
 
-int myFunction(int num,const char mystr[]) 
+int myFunction(int num,const char *mystr) 
 { 
     printf("str is %s",mystr);
     if (num == 0) 

@@ -10,7 +10,7 @@ fun = ctypes.CDLL(os.path.join(os.getcwd(),'libfun.so'))
 # will be passed to the function                                                         
 # ctypes will check it. 
             
-fun.myFunction.argtypes = [ctypes.c_int,ctypes.c_wchar_p]
+fun.myFunction.argtypes = [ctypes.c_int,ctypes.c_char_p]
   
 # now we can call this  
 # function using instant (fun) 
