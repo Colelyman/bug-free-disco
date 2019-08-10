@@ -11,12 +11,21 @@ fun = ctypes.CDLL(os.path.join(os.getcwd(),'libfun.so'))
 # ctypes will check it. 
             
 fun.myFunction.argtypes = [ctypes.c_int,ctypes.c_char_p]
+
   
 # now we can call this  
 # function using instant (fun) 
 # returnValue is the value  
 # return by function written in C  
-# code 
-retVal = fun.myFunction(16,'TEST')      
+# code      
+
+fun.myFunction.restype = ctypes.c_char_p
+# this is needed to specify
+# the return type for strings.
+# Otherwise default is int and 
+# it will return a memory address.
+
+
+retVal = fun.myFunction(1, "TEST")
 
 print('return value is ' + str(retVal))
