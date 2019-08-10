@@ -21,6 +21,11 @@ char* myFunction(int num,char *mystr)
     return mystr;
 } 
 
+// void freeMem(char* p){
+// 	free(p);
+	
+// }
+
 
 
 
