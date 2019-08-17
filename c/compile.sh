@@ -1,0 +1,1 @@
+gcc -fPIC -shared -o libfun.so CRISPResso2Align.c
