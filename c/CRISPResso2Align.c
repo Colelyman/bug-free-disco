@@ -34,7 +34,7 @@ void setup(void) {
 
 
 
-char** global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap extend both -1
+char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap extend both -1
 	int gap_open = -1;
 	int gap_extend = -1;
 
@@ -322,7 +322,7 @@ char** global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap
 			else if (currMatrix == JARRAY) {
 				currMatrix = jPointer[i][j];
 				i--;
-				align_j[align_counter] = '-';                //NOT SURE ABOUT THESE DASHES
+				align_j[align_counter] = '-';
 				align_i[align_counter] = ci;
 				ci = seqi[i-1];
 			}
@@ -371,8 +371,8 @@ char** global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap
     return NULL;
 } 
 
-void done(){
-	fclose(fp);
+void done(){ 
+	fclose(fp);   // make sure to call fun.done() at the end of function.py
 }
 
 
