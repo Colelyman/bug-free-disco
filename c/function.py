@@ -11,8 +11,8 @@ fun = ctypes.CDLL(os.path.join(os.getcwd(),'libfun.so'))
 fun.setup()
 
 
-seqj = "CAT"
-seqi = "CART"
+seqj = "CART"
+seqi = "CAT"
 gap_incentive = numpy.zeros(len(seqi), numpy.int32)
 
 
@@ -21,8 +21,8 @@ gap_incentive = numpy.zeros(len(seqi), numpy.int32)
 # ctypes will check it.
 fun.global_align.argtypes = [ctypes.c_char_p,ctypes.c_char_p,numpy.ctypeslib.ndpointer(dtype=numpy.int32)]
 fun.global_align.restype = ctypes.c_char_p # specify return type. Default is int
-retval = fun.global_align(seqj, seqi, gap_incentive)
-print(retval)
+fun.global_align(seqj, seqi, gap_incentive)
+fun.done() #make sure to close output file.
 
 
 # argtype for 1d int array: numpy.ctypeslib.ndpointer(dtype=numpy.int32)

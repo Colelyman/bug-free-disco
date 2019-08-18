@@ -4,7 +4,7 @@
 
 size_t UP = 1, LEFT = 2, DIAG = 3, NONE = 4;
 size_t MARRAY = 1, IARRAY = 2, JARRAY = 3;
-char output[100];
+FILE * fp; // pointer to output file
 
 
 int matrix[15][15] = { { 5,  -4,  -4,  -4,  -4,   1,   1,  -4,  -4,   1,  -4,  -1,  -1,  -1,  -2},
@@ -28,12 +28,13 @@ void setup(void) {
 	for (int i=0; i < sizeof(codons); i++){
 	     charint[codons[i]] = i;
 	}
+	fp = fopen ("output.txt","a");
 }
 // charint maps bases to ints: A:0, T:1, G:2, etc...
 
 
 
-char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap extend both -1
+char** global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap extend both -1
 	int gap_open = -1;
 	int gap_extend = -1;
 
@@ -343,27 +344,36 @@ char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap 
 		align_counter++;
 	}
 
-
-
-
 	float final_score = 100*matchCount/align_counter;
 
-	printf("%f\n", final_score);
 
 
-	int lenout = strlen(align_j);
-	char rev[lenout];
+	// reversing align_i and align_j
+	align_i[align_counter] = align_j[align_counter] = '\0';
+	int lenj = strlen(align_j);
+	int leni = strlen(align_i);
 
-	for(int i = 0; i < lenout; i++){
-		rev[i] = align_j[lenout-i-1];
-	}
-	rev[lenout] = '\0';
+	char revj[lenj];
+	char revi[leni];
 
+	for(int i = 0; i < lenj; i++){
+		revj[i] = align_j[lenj-i-1];
+	} revj[lenj] = '\0';
 
-	strcpy(output, rev);
-    return output;
+	for(int i = 0; i < leni; i++){
+		revi[i] = align_i[leni-i-1];
+	} revi[leni] = '\0';
 
+   
+	//writing result sequences to output.txt
+   	fprintf (fp, "%s\t%s\t%f\n",revj, revi, final_score); 
+
+    return NULL;
 } 
+
+void done(){
+	fclose(fp);
+}
 
 
 
