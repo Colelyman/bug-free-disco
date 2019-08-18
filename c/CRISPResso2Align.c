@@ -4,6 +4,7 @@
 
 size_t UP = 1, LEFT = 2, DIAG = 3, NONE = 4;
 size_t MARRAY = 1, IARRAY = 2, JARRAY = 3;
+char output[100];
 
 
 int matrix[15][15] = { { 5,  -4,  -4,  -4,  -4,   1,   1,  -4,  -4,   1,  -4,  -1,  -1,  -1,  -2},
@@ -51,11 +52,11 @@ char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap 
     }
 
 
-    size_t i = 0, j = 0, seqlen, align_counter = 0, p;
+    size_t i = 0, j = 0, seqlen = max_j + max_i, align_counter = 0, p;
     int diag_score, up_score, left_score, tscore;
 
-    char *align_j;
-    char *align_i;
+    char align_j[seqlen];
+    char align_i[seqlen];
     char ci;
     char cj;
     // PyObject pointers ai and aj... dont think we need anything here in c.
@@ -156,16 +157,224 @@ char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap 
 		}
 	}
 
-	for(int i = 0; i < max_i; i++){
-		for(int j = 0; j < max_j; j++){
-			printf("%i ", mScore[i][j]);
-		} printf("\n");
+
+	// For last column and last row, ignore gap opening penalty
+
+	// last column
+	j = max_j;
+	cj = seqj[j-1];
+
+	for(int i = 1; i<max_i; i++){
+		ci = seqi[i-1];
+
+		iFromMVal = gap_extend + mScore[i][j - 1] + gap_incentive[i];
+        iExtendVal = gap_extend + iScore[i][j - 1] + gap_incentive[i];
+
+        if (iFromMVal > iExtendVal){
+        	iScore[i][j] = iFromMVal;
+        	iPointer[i][j] = MARRAY;
+        } else {
+        	iScore[i][j] = iFromMVal;
+        	iPointer[i][j] = IARRAY;
+        }
+
+        jFromMVal = gap_extend + mScore[i-1][j] + gap_incentive[i-1];
+        jExtendVal = gap_extend + jScore[i-1][j];
+
+        if (jFromMVal > jExtendVal){
+        	jScore[i][j] = jFromMVal;
+        	jPointer[i][j] = MARRAY;
+        } else {
+        	jScore[i][j] = jExtendVal;
+        	jPointer[i][j] = JARRAY;
+        }
+
+        mVal = mScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+        iVal = iScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+        jVal = jScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+
+        if (mVal > jVal){
+        	if (mVal > iVal){
+        		mScore[i][j] = mVal;
+        		mPointer[i][j] = MARRAY;
+        	} else {
+        		mScore[i][j] = iVal;
+        		mPointer[i][j] = IARRAY;
+        	}
+        } else {
+        	if (jVal > iVal){
+        		mScore[i][j] = jVal;
+        		mPointer[i][j] = JARRAY;
+        	} else {
+        		mScore[i][j] = iVal;
+        		mPointer[i][j] = IARRAY;
+        	}
+        }
+	}
+
+	// last row
+	i = max_i;
+	ci = seqi[i-1];
+
+	for (int j = 1; j < max_j+1; j++){
+		cj = seqj[j-1];
+
+		iFromMVal = gap_extend + mScore[i][j - 1] + gap_incentive[i];
+		iExtendVal = gap_extend + iScore[i][j - 1] + gap_incentive[i];
+
+		if (iFromMVal > iExtendVal){
+			iScore[i][j] = iFromMVal;
+			iPointer[i][j] = MARRAY;
+		} else {
+			iScore[i][j] = iExtendVal;
+			iPointer[i][j] = IARRAY;
+		}
+
+		jFromMVal = gap_extend + mScore[i-1][j] + gap_incentive[i-1];
+		jExtendVal = gap_extend + jScore[i-1][j];
+
+		if (jFromMVal > jExtendVal){
+			jScore[i][j] = jFromMVal;
+			jPointer[i][j] = MARRAY;
+		} else {
+			jScore[i][j] = jExtendVal;
+			jPointer[i][j] = JARRAY;
+		}
+
+		mVal = mScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+		iVal = iScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+		jVal = jScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+
+		if (mVal > jVal){
+			if (mVal > iVal){
+				mScore[i][j] = mVal;
+				mPointer[i][j] = MARRAY;
+			} else {
+				mScore[i][j] = iVal;
+				mPointer[i][j] = IARRAY;
+			}
+		} else {
+			if (jVal > iVal) {
+				mScore[i][j] = jVal;
+				mPointer[i][j] = JARRAY;
+			} else {
+				mScore[i][j] = iVal;
+				mPointer[i][j] = IARRAY;
+			}
+		}
+
 	}
 
 
-    return NULL;
+	int matchCount = 0;
+
+	i = max_i;
+	j = max_j;
+	ci = seqi[i-1];
+	cj = seqj[j-1];
+
+	int currMatrix;
+	currMatrix = MARRAY;
+
+	if (mScore[i][j] > jScore[i][j]){
+		if (mScore[i][j] > jScore[i][j]){
+			currMatrix = MARRAY;
+		} else {
+			currMatrix = IARRAY;
+		}
+	} else {
+		if (jScore[i][j] > iScore[i][j]){
+			currMatrix = JARRAY;
+		} else {
+			currMatrix = IARRAY;
+		}
+	}
+
+	while ((i > 0) || (j > 0)){
+
+		int currVal = mScore[i][j];
+		int currPtr = mPointer[i][j];
+
+		if (currMatrix == 2){
+			currVal = iScore[i][j];
+			currPtr = iPointer[i][j];
+		}
+
+		if (currMatrix == 3){
+			currVal = jPointer[i][j];
+			currPtr = jPointer[i][j];
+		}
+
+		if (i > 0 || j > 0){
+			if (currMatrix == MARRAY){
+				currMatrix = mPointer[i][j];
+				i--;
+				j--;
+				align_j[align_counter] = cj;
+				align_i[align_counter] = ci;
+				if (cj == ci){
+					matchCount++;
+				}
+				ci = seqi[i-1];
+				cj = seqj[j-1];
+			}
+			else if (currMatrix == JARRAY) {
+				currMatrix = jPointer[i][j];
+				i--;
+				align_j[align_counter] = '-';                //NOT SURE ABOUT THESE DASHES
+				align_i[align_counter] = ci;
+				ci = seqi[i-1];
+			}
+			else if (currMatrix == IARRAY) {
+				currMatrix = iPointer[i][j];
+				j--;
+				align_j[align_counter] = cj;
+				align_i[align_counter] = '-';
+				cj = seqj[j-1];
+			}
+			else {
+				printf("i: %lu  j: %lu\n", i, j);
+				printf("currMatrix: %i\n", currMatrix);
+				printf("seqj: %s  seqi: %s", seqj, seqi);
+				printf("wtf4!:pointer: %zu", i);
+			}
+		}
+
+		align_counter++;
+	}
+
+
+
+
+	float final_score = 100*matchCount/align_counter;
+
+	printf("%f\n", final_score);
+
+
+	int lenout = strlen(align_j);
+	char rev[lenout];
+
+	for(int i = 0; i < lenout; i++){
+		rev[i] = align_j[lenout-i-1];
+	}
+	rev[lenout] = '\0';
+
+
+	strcpy(output, rev);
+    return output;
 
 } 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
