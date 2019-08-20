@@ -6,31 +6,17 @@ size_t UP = 1, LEFT = 2, DIAG = 3, NONE = 4;
 size_t MARRAY = 1, IARRAY = 2, JARRAY = 3;
 FILE * fp; // pointer to output file
 
+int matrix[90][90];
 
-int matrix[15][15] = { { 5,  -4,  -4,  -4,  -4,   1,   1,  -4,  -4,   1,  -4,  -1,  -1,  -1,  -2},
-  				   				 {-4,   5,  -4,  -4,  -4,   1,  -4,   1,   1,  -4,  -1,  -4,  -1,  -1,  -2},
-  				   				 {-4, -4,   5,  -4,   1,  -4,   1,  -4,   1,  -4,  -1,  -1,  -4,  -1,  -2},
-			  				     {-4,  -4,  -4,   5,   1,  -4,  -4,   1,  -4,   1,  -1,  -1,  -1,  -4,  -2},
-			  				     {-4,  -4,   1,   1,  -1,  -4,  -2,  -2,  -2,  -2,  -1,  -1,  -3,  -3,  -1},
-			   				     {1,   1,  -4,  -4,  -4,  -1,  -2,  -2,  -2,  -2,  -3,  -3,  -1,  -1,  -1},
-			   				     {1,  -4,   1,  -4,  -2,  -2,  -1,  -4,  -2,  -2,  -3,  -1,  -3,  -1,  -1},
-			  				     {-4,   1,  -4,   1,  -2,  -2,  -4,  -1,  -2,  -2,  -1,  -3,  -1,  -3,  -1},
-			  				     {-4,   1,   1,  -4,  -2,  -2,  -2,  -2,  -1,  -4,  -1,  -3,  -3,  -1,  -1},
-			   				     {1,  -4,  -4,   1,  -2,  -2,  -2,  -2,  -4,  -1,  -3,  -1,  -1,  -3,  -1},
-			  				     {-4,  -1,  -1,  -1,  -1,  -3,  -3,  -1,  -1,  -3,  -1,  -2, -2,  -2,  -1},
-			  				     {-1,  -4,  -1,  -1,  -1,  -3,  -1,  -3,  -3,  -1,  -2,  -1,  -2,  -2,  -1},
-			  				     {-1,  -1,  -4,  -1,  -3,  -1,  -3,  -1,  -3,  -1,  -2,  -2,  -1,  -2,  -1}, 
-			  				     {-1,  -1,  -1,  -4,  -3,  -1,  -1,  -3,  -1,  -3,  -2,  -2,  -2,  -1,  -1},
-			  				     {-2,  -2,  -2,  -2,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1} };
-char codons[] = {'A','T','G','C','S','W','R','Y','K','M','B','V','H','D','N'};
-int charint[90];
-void setup(void) {
-	for (int i=0; i < sizeof(codons); i++){
-	     charint[codons[i]] = i;
-	}
-	fp = fopen ("output.txt","a");
+
+void setup(int *EDNAFULL) {
+    for (int i=0; i<90; i++) {
+        for (int j=0; j<90; j++) {
+            matrix[i][j] = EDNAFULL[90*i + j];
+        }
+    }
+    fp = fopen("output.txt","a");
 }
-// charint maps bases to ints: A:0, T:1, G:2, etc...
 
 
 
@@ -131,9 +117,9 @@ char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap 
 				jPointer[i][j] = JARRAY;
 			}
 
-			mVal = mScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
-			iVal = iScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
-			jVal = jScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+			mVal = mScore[i-1][j-1] + matrix[ci][cj];
+			iVal = iScore[i-1][j-1] + matrix[ci][cj];
+			jVal = jScore[i-1][j-1] + matrix[ci][cj];
 
 
 			if (mVal > jVal){
@@ -190,9 +176,9 @@ char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap 
         	jPointer[i][j] = JARRAY;
         }
 
-        mVal = mScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
-        iVal = iScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
-        jVal = jScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+        mVal = mScore[i-1][j-1] + matrix[ci][cj];
+        iVal = iScore[i-1][j-1] + matrix[ci][cj];
+        jVal = jScore[i-1][j-1] + matrix[ci][cj];
 
         if (mVal > jVal){
         	if (mVal > iVal){
@@ -242,9 +228,9 @@ char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap 
 			jPointer[i][j] = JARRAY;
 		}
 
-		mVal = mScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
-		iVal = iScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
-		jVal = jScore[i-1][j-1] + matrix[charint[ci]][charint[cj]];
+		mVal = mScore[i-1][j-1] + matrix[ci][cj];
+		iVal = iScore[i-1][j-1] + matrix[ci][cj];
+		jVal = jScore[i-1][j-1] + matrix[ci][cj];
 
 		if (mVal > jVal){
 			if (mVal > iVal){
