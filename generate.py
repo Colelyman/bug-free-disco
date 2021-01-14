@@ -1,10 +1,11 @@
 import random
+import os
 
 pool = ['A', 'T', 'C', 'G']
-num_tests = 1000 #number of test cases
+num_tests = 10000 #number of test cases
 str_min_len = 100 #min and max lens of strings to produce
-str_max_len = 200
-num_mods = 5 #max number of modifications (indels) to introduce
+str_max_len = 300
+num_mods = 3 #max number of modifications (indels) to introduce
 
 def stringconstruct():
     string = []
@@ -51,13 +52,22 @@ def stringmutate(string):
     str_b = str_aln_b.replace("-","")
     return(str_a,str_b,str_aln_a,str_aln_b)
 
+file_index = 0
+file_name = "generate.py.test"+str(file_index)+".test"
+while os.path.exists(file_name):
+    file_index += 1
+    file_name = "generate.py.test"+str(file_index)+".test"
+
+outF = open(file_name, "w")
+this_string = stringconstruct()
+outF.write("WT\t" + this_string+"\n")
 testno = 0
-outF = open("randtests.txt", "w")
 while testno < num_tests:
-    a,b,aln_a, aln_b = stringmutate(stringconstruct())
-    outF.write("\t".join([a,b,aln_a,aln_b,"\n"]))
+    a,b,aln_a, aln_b = stringmutate(this_string)
+    outF.write(b+"\n")
     testno += 1
 outF.close()
+print('wrote ' + str(testno) + ' to ' + file_name)
 
 
 

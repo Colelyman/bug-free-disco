@@ -1,7 +1,8 @@
 from distutils.core import setup
 from Cython.Build import cythonize
+import numpy
 
 setup(
     ext_modules=cythonize("*.pyx"),
-    include_dirs=['/anaconda2/lib/python2.7/site-packages/numpy/core/include/']
+    include_dirs=[numpy.get_include()]
 )
