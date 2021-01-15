@@ -67,6 +67,8 @@ if __name__ == '__main__':
         end = time.time()
         times += [end - start]
 
+    FUN.done()
+
     print('Min: {0}'.format(min(times)))
     print('Mean: {0}'.format(sum(times) / len(times)))
     print('Max: {0}'.format(max(times)))

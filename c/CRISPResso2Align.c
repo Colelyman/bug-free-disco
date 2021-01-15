@@ -1,4 +1,4 @@
-#include <stdio.h> 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -72,7 +72,7 @@ char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap 
     for (int i = 1; i<max_i+1; i++) mPointer[i][0] = JARRAY;
     mScore[0][0] = mPointer[0][0] = 0;
 
-	
+
 	// Initializing i matrix
 	for (int j = 1; j < max_j+1; j++) iScore[0][j] = gap_extend * j;
 	for (int i = 0; i < max_i+1; i++) iScore[i][0] = min_score;
@@ -350,43 +350,13 @@ char* global_align(char* seqj, char* seqi, int* gap_incentive){ //gap open, gap 
 		revi[i] = align_i[leni-i-1];
 	} revi[leni] = '\0';
 
-   
+
 	//writing result sequences to output.txt
-   	fprintf (fp, "%s\t%s\t%f\n",revj, revi, final_score); 
+   	fprintf (fp, "%s\t%s\t%f\n",revj, revi, final_score);
 
     return NULL;
-} 
-
-void done(){ 
-	fclose(fp);   // make sure to call fun.done() at the end of function.py
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void done(){
+	fclose(fp);   // make sure to call fun.done() at the end of function.py
+}
